@@ -1,10 +1,14 @@
-# UBC Course Advisor
+# Course Explorer
 
-An AI-powered chatbot that helps UBC students find the right courses using natural language queries.
+A RAG-powered course discovery tool demonstrating semantic search and AI recommendations.
 
 ![Python](https://img.shields.io/badge/Python-3.11+-blue)
 ![AWS](https://img.shields.io/badge/AWS-Bedrock-orange)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.41+-red)
+
+**Live Demo:** [cloudllm.tech:8501](http://cloudllm.tech:8501)
+
+> **Disclaimer:** This is a portfolio project for demonstration purposes. Not affiliated with UBC. Course data sourced from [UBC Academic Calendar](https://vancouver.calendar.ubc.ca/course-descriptions).
 
 ## What It Does
 
@@ -13,7 +17,7 @@ Ask questions like:
 - "What database courses are available?"
 - "I want to prepare for AI research"
 
-The advisor searches 74 UBC courses semantically and provides personalized recommendations with prerequisites and course progressions.
+The advisor searches 74 courses semantically and provides personalized recommendations with prerequisites and course progressions.
 
 ## Architecture
 
@@ -26,7 +30,7 @@ User Query → Semantic Search (FAISS) → Relevant Courses → Claude 3.5 → R
 - **Embeddings:** Amazon Titan Text Embeddings V2
 - **Vector Store:** FAISS (Facebook AI Similarity Search)
 - **Framework:** LangChain + Streamlit
-- **Deployment:** AWS App Runner
+- **Deployment:** AWS EC2
 
 ## Quick Start
 
@@ -74,10 +78,9 @@ ubc-course-advisor/
 │   ├── embeddings.py      # Vector store & retrieval
 │   └── rag.py             # RAG pipeline with Claude
 ├── data/
-│   └── courses.json       # 74 UBC courses
+│   └── courses.json       # 74 courses
 ├── faiss_index/           # Pre-built vector index
-├── Dockerfile             # Container config
-└── apprunner.yaml         # AWS App Runner config
+└── Dockerfile             # Container config
 ```
 
 ## How It Works
@@ -100,35 +103,39 @@ Retrieved courses are passed to Claude 3.5 Haiku with a prompt that ensures reco
 
 ## Deployment
 
-### AWS App Runner (Recommended)
+### EC2 Deployment
 
 ```bash
-# Create ECR repository
-aws ecr create-repository --repository-name ubc-course-advisor
+# SSH into EC2 instance
+ssh -i your-key.pem ec2-user@your-instance-ip
 
-# Build and push Docker image
-docker build -t ubc-course-advisor .
-docker tag ubc-course-advisor:latest <account-id>.dkr.ecr.us-west-2.amazonaws.com/ubc-course-advisor:latest
-docker push <account-id>.dkr.ecr.us-west-2.amazonaws.com/ubc-course-advisor:latest
+# Install dependencies
+sudo yum install python3.11 python3.11-pip git -y
 
-# Deploy via App Runner Console or CLI
+# Clone and setup
+git clone https://github.com/aravipati/ubc-course-advisor.git
+cd ubc-course-advisor
+pip3.11 install -r requirements.txt
+
+# Run with systemd (recommended)
+sudo systemctl start streamlit
 ```
 
 ### Local Docker
 
 ```bash
-docker build -t ubc-course-advisor .
-docker run -p 8501:8501 -e AWS_REGION=us-west-2 ubc-course-advisor
+docker build -t course-explorer .
+docker run -p 8501:8501 -e AWS_REGION=us-west-2 course-explorer
 ```
 
 ## Cost Estimate
 
 | Component | Monthly Cost |
 |-----------|--------------|
-| App Runner (low traffic) | ~$5-10 |
+| EC2 t3.small | ~$15 |
 | Bedrock Claude (1000 queries) | ~$1 |
 | Bedrock Titan Embeddings | ~$0.01 |
-| **Total** | **~$6-12/month** |
+| **Total** | **~$16/month** |
 
 ## License
 
@@ -136,5 +143,5 @@ MIT
 
 ## Acknowledgments
 
-- Course data from [UBC Academic Calendar](https://vancouver.calendar.ubc.ca/)
+- Course data from [UBC Academic Calendar](https://vancouver.calendar.ubc.ca/course-descriptions)
 - Built with [LangChain](https://langchain.com/) and [Streamlit](https://streamlit.io/)
