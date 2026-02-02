@@ -43,8 +43,8 @@ User Query → Semantic Search (FAISS) → Relevant Courses → Claude 3.5 → R
 
 ```bash
 # Clone the repo
-git clone https://github.com/aravipati/ubc-course-advisor.git
-cd ubc-course-advisor
+git clone https://github.com/aravipati/course-explorer.git
+cd course-explorer
 
 # Create virtual environment
 python3 -m venv venv
@@ -113,8 +113,8 @@ ssh -i your-key.pem ec2-user@your-instance-ip
 sudo yum install python3.11 python3.11-pip git -y
 
 # Clone and setup
-git clone https://github.com/aravipati/ubc-course-advisor.git
-cd ubc-course-advisor
+git clone https://github.com/aravipati/course-explorer.git
+cd course-explorer
 pip3.11 install -r requirements.txt
 
 # Run with systemd (recommended)
